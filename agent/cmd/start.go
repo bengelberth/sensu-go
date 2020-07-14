@@ -226,9 +226,7 @@ func handleConfig(cmd *cobra.Command) error {
 	configFileDefault := fmt.Sprintf("path to sensu-agent config file (default %q)", configFileDefaultLocation)
 	_ = configFlagSet.StringP(flagConfigFile, "c", "", configFileDefault)
 	configFlagSet.SetOutput(ioutil.Discard)
-	if err := configFlagSet.Parse(os.Args[1:]); err != nil {
-		panic(err)
-	}
+	_ = configFlagSet.Parse(os.Args[1:])
 
 	// Get the given config file path
 	configFile, _ := configFlagSet.GetString(flagConfigFile)
@@ -239,7 +237,7 @@ func handleConfig(cmd *cobra.Command) error {
 		configFilePath = filepath.Join(path.SystemConfigDir(), "agent.yml")
 	}
 
-	// Configure location of backend configuration
+	// Configure location of agent configuration
 	viper.SetConfigType("yaml")
 	viper.SetConfigFile(configFilePath)
 

@@ -284,6 +284,10 @@ func StartCommand(initialize InitializeFunc) *cobra.Command {
 func handleConfig(cmd *cobra.Command, server bool) error {
 	// Set up distinct flagset for handling config file
 	configFlagSet := pflag.NewFlagSet("sensu", pflag.ContinueOnError)
+	// Skip flags that are not config-file
+	configFlagSet.ParseErrorsWhitelist = pflag.ParseErrorsWhitelist{
+		UnknownFlags: true,
+	}
 	configFileDefaultLocation := filepath.Join(path.SystemConfigDir(), "backend.yml")
 	configFileDefault := fmt.Sprintf("path to sensu-backend config file (default %q)", configFileDefaultLocation)
 	configFlagSet.StringP(flagConfigFile, "c", "", configFileDefault)

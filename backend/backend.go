@@ -40,7 +40,6 @@ import (
 	"github.com/sensu/sensu-go/backend/secrets"
 	"github.com/sensu/sensu-go/backend/store"
 	etcdstore "github.com/sensu/sensu-go/backend/store/etcd"
-	"github.com/sensu/sensu-go/backend/tessend"
 	"github.com/sensu/sensu-go/rpc"
 	"github.com/sensu/sensu-go/system"
 	"github.com/sensu/sensu-go/util/retry"
@@ -412,19 +411,19 @@ func Initialize(ctx context.Context, config *Config) (*Backend, error) {
 	b.Daemons = append(b.Daemons, api)
 
 	// Initialize tessend
-	tessen, err := tessend.New(
-		b.RunContext(),
-		tessend.Config{
-			Store:      stor,
-			EventStore: eventStoreProxy,
-			RingPool:   ringPool,
-			Client:     b.Client,
-			Bus:        bus,
-		})
-	if err != nil {
-		return nil, fmt.Errorf("error initializing %s: %s", tessen.Name(), err)
-	}
-	b.Daemons = append(b.Daemons, tessen)
+	//tessen, err := tessend.New(
+	//	b.RunContext(),
+	//	tessend.Config{
+	//		Store:      stor,
+	//		EventStore: eventStoreProxy,
+	//		RingPool:   ringPool,
+	//		Client:     b.Client,
+	//		Bus:        bus,
+	//	})
+	//if err != nil {
+	//	return nil, fmt.Errorf("error initializing %s: %s", tessen.Name(), err)
+	//}
+	//b.Daemons = append(b.Daemons, tessen)
 
 	// Initialize dashboardd TLS config
 	var dashboardTLSConfig *corev2.TLSOptions
