@@ -218,11 +218,17 @@ func StartCommandWithError(initialize InitializeFunc) (*cobra.Command, error) {
 func handleConfig(cmd *cobra.Command) error {
 	// Set up distinct flagset for handling config file
 	configFlagSet := pflag.NewFlagSet("sensu", pflag.ContinueOnError)
+	// Skip flags that are not config-file
+	configFlagSet.ParseErrorsWhitelist = pflag.ParseErrorsWhitelist{
+		UnknownFlags: true,
+	}
 	configFileDefaultLocation := filepath.Join(path.SystemConfigDir(), "agent.yml")
 	configFileDefault := fmt.Sprintf("path to sensu-agent config file (default %q)", configFileDefaultLocation)
 	_ = configFlagSet.StringP(flagConfigFile, "c", "", configFileDefault)
 	configFlagSet.SetOutput(ioutil.Discard)
-	_ = configFlagSet.Parse(os.Args[1:])
+	if err := configFlagSet.Parse(os.Args[1:]); err != nil {
+		panic(err)
+	}
 
 	// Get the given config file path
 	configFile, _ := configFlagSet.GetString(flagConfigFile)
