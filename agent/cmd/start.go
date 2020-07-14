@@ -238,6 +238,7 @@ func handleConfig(cmd *cobra.Command) error {
 	}
 
 	// Configure location of agent configuration
+	viper.SetKeysCaseSensitive(true)
 	viper.SetConfigType("yaml")
 	viper.SetConfigFile(configFilePath)
 

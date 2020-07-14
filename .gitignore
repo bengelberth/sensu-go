@@ -20,6 +20,7 @@ coverage.out
 !/backend/authentication/jwt/testdata/*
 ca-config.json
 agent.yaml
+agent.json
 
 # packaging
 *.log

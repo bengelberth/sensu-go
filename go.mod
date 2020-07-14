@@ -6,6 +6,8 @@ replace (
 	github.com/sensu/sensu-go/api/core/v2 => ./api/core/v2
 	github.com/sensu/sensu-go/api/core/v3 => ./api/core/v3
 	github.com/sensu/sensu-go/types => ./types
+	github.com/spf13/viper v1.3.2 => github.com/knadh/viper v1.3.2-0.20190406053603-e393435cb0be
+
 )
 
 require (
@@ -31,20 +33,23 @@ require (
 	github.com/gogo/protobuf v1.3.1
 	github.com/golang/groupcache v0.0.0-20191002201903-404acd9df4cc // indirect
 	github.com/golang/protobuf v1.3.3
+	github.com/google/btree v1.0.0 // indirect
 	github.com/google/go-cmp v0.4.0 // indirect
 	github.com/google/uuid v1.1.1
 	github.com/gorilla/mux v1.7.3
-	github.com/gorilla/websocket v1.4.1
+	github.com/gorilla/websocket v1.4.2
 	github.com/gotestyourself/gotestyourself v2.2.0+incompatible // indirect
 	github.com/graph-gophers/dataloader v0.0.0-20180104184831-78139374585c
 	github.com/graphql-go/graphql v0.7.9-0.20191125031726-2e2b648ecbe4
 	github.com/grpc-ecosystem/go-grpc-middleware v1.1.0 // indirect
+	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway v1.11.3 // indirect
 	github.com/gxed/GoEndian v0.0.0-20160916112711-0f5c6873267e // indirect
 	github.com/gxed/eventfd v0.0.0-20160916113412-80a92cca79a8 // indirect
 	github.com/hashicorp/go-version v1.2.0
 	github.com/ipfs/go-log v1.0.4 // indirect
 	github.com/jbenet/go-reuseport v0.0.0-20180416043609-15a1cd37f050 // indirect
+	github.com/jonboulle/clockwork v0.2.0 // indirect
 	github.com/libp2p/go-reuseport v0.0.0-20180416043609-15a1cd37f050 // indirect
 	github.com/libp2p/go-sockaddr v0.1.0 // indirect
 	github.com/mattn/go-colorable v0.1.4 // indirect
@@ -53,8 +58,6 @@ require (
 	github.com/mholt/archiver/v3 v3.3.1-0.20191129193105-44285f7ed244
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/mitchellh/mapstructure v1.1.2
-	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
-	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/olekukonko/tablewriter v0.0.0-20180506121414-d4647c9c7a84
 	github.com/prometheus/client_golang v1.2.0
 	github.com/prometheus/client_model v0.0.0-20190812154241-14fe0d1b01d4
@@ -65,20 +68,22 @@ require (
 	github.com/sensu/sensu-go/types v0.1.0
 	github.com/shirou/gopsutil v0.0.0-20190901111213-e4ec7b275ada
 	github.com/sirupsen/logrus v1.6.0
+	github.com/soheilhy/cmux v0.1.4 // indirect
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/pflag v1.0.5
-	github.com/spf13/viper v1.6.2
+	github.com/spf13/viper v1.3.2
+
 	github.com/stretchr/objx v0.2.0 // indirect
 	github.com/stretchr/testify v1.6.0
+	github.com/tmc/grpc-websocket-proxy v0.0.0-20200427203606-3cfed13b9966 // indirect
 	github.com/willf/pad v0.0.0-20160331131008-b3d780601022
+	github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2 // indirect
 	go.etcd.io/bbolt v1.3.4
 	golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550
 	golang.org/x/net v0.0.0-20200202094626-16171245cfb2
 	golang.org/x/sys v0.0.0-20200602225109-6fdc65e7d980
-	golang.org/x/text v0.3.2 // indirect
 	golang.org/x/time v0.0.0-20191024005414-555d28b269f0
 	golang.org/x/tools v0.0.0-20200207224406-61798d64f025 // indirect
-	google.golang.org/genproto v0.0.0-20191009194640-548a555dbc03 // indirect
 	google.golang.org/grpc v1.24.0
 	gopkg.in/AlecAivazis/survey.v1 v1.4.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect

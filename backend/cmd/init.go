@@ -75,7 +75,7 @@ func InitCommand() *cobra.Command {
 			cfg := &backend.Config{
 				EtcdClientURLs:      fallbackStringSlice(flagEtcdClientURLs, flagEtcdAdvertiseClientURLs),
 				EtcdCipherSuites:    viper.GetStringSlice(flagEtcdCipherSuites),
-				EtcdMaxRequestBytes: viper.GetUint(flagEtcdMaxRequestBytes),
+				EtcdMaxRequestBytes: uint(viper.GetInt64(flagEtcdMaxRequestBytes)),
 				NoEmbedEtcd:         true,
 			}
 

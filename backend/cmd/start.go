@@ -201,9 +201,9 @@ func StartCommand(initialize InitializeFunc) *cobra.Command {
 				EtcdName:                     viper.GetString(flagEtcdNodeName),
 				EtcdCipherSuites:             viper.GetStringSlice(flagEtcdCipherSuites),
 				EtcdQuotaBackendBytes:        viper.GetInt64(flagEtcdQuotaBackendBytes),
-				EtcdMaxRequestBytes:          viper.GetUint(flagEtcdMaxRequestBytes),
-				EtcdHeartbeatInterval:        viper.GetUint(flagEtcdHeartbeatInterval),
-				EtcdElectionTimeout:          viper.GetUint(flagEtcdElectionTimeout),
+				EtcdMaxRequestBytes:          uint(viper.GetInt64(flagEtcdMaxRequestBytes)),
+				EtcdHeartbeatInterval:        uint(viper.GetInt64(flagEtcdHeartbeatInterval)),
+				EtcdElectionTimeout:          uint(viper.GetInt64(flagEtcdElectionTimeout)),
 				NoEmbedEtcd:                  viper.GetBool(flagNoEmbedEtcd),
 				Labels:                       viper.GetStringMapString(flagLabels),
 				Annotations:                  viper.GetStringMapString(flagAnnotations),
@@ -304,6 +304,7 @@ func handleConfig(cmd *cobra.Command, server bool) error {
 	}
 
 	// Configure location of backend configuration
+	viper.SetKeysCaseSensitive(true)
 	viper.SetConfigType("yaml")
 	viper.SetConfigFile(configFilePath)
 
@@ -413,9 +414,9 @@ func handleConfig(cmd *cobra.Command, server bool) error {
 		_ = cmd.Flags().SetAnnotation(flagNoEmbedEtcd, "categories", []string{"store"})
 		cmd.Flags().Int64(flagEtcdQuotaBackendBytes, viper.GetInt64(flagEtcdQuotaBackendBytes), "maximum etcd database size in bytes (use with caution)")
 		_ = cmd.Flags().SetAnnotation(flagEtcdQuotaBackendBytes, "categories", []string{"store"})
-		cmd.Flags().Uint(flagEtcdHeartbeatInterval, viper.GetUint(flagEtcdHeartbeatInterval), "interval in ms with which the etcd leader will notify followers that it is still the leader")
+		cmd.Flags().Uint(flagEtcdHeartbeatInterval, uint(viper.GetInt64(flagEtcdHeartbeatInterval)), "interval in ms with which the etcd leader will notify followers that it is still the leader")
 		_ = cmd.Flags().SetAnnotation(flagEtcdHeartbeatInterval, "categories", []string{"store"})
-		cmd.Flags().Uint(flagEtcdElectionTimeout, viper.GetUint(flagEtcdElectionTimeout), "time in ms a follower node will go without hearing a heartbeat before attempting to become leader itself")
+		cmd.Flags().Uint(flagEtcdElectionTimeout, uint(viper.GetInt64(flagEtcdElectionTimeout)), "time in ms a follower node will go without hearing a heartbeat before attempting to become leader itself")
 		_ = cmd.Flags().SetAnnotation(flagEtcdElectionTimeout, "categories", []string{"store"})
 
 		// Etcd server TLS flags
@@ -440,7 +441,7 @@ func handleConfig(cmd *cobra.Command, server bool) error {
 	cmd.Flags().StringSlice(flagEtcdAdvertiseClientURLs, viper.GetStringSlice(flagEtcdAdvertiseClientURLs), "list of this member's client URLs to advertise to clients")
 	_ = cmd.Flags().SetAnnotation(flagEtcdAdvertiseClientURLs, "categories", []string{"store"})
 
-	cmd.Flags().Uint(flagEtcdMaxRequestBytes, viper.GetUint(flagEtcdMaxRequestBytes), "maximum etcd request size in bytes (use with caution)")
+	cmd.Flags().Uint(flagEtcdMaxRequestBytes, uint(viper.GetInt64(flagEtcdMaxRequestBytes)), "maximum etcd request size in bytes (use with caution)")
 	_ = cmd.Flags().SetAnnotation(flagEtcdMaxRequestBytes, "categories", []string{"store"})
 
 	// Etcd client/server TLS flags
