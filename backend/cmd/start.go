@@ -84,6 +84,25 @@ const (
 	flagEtcdMaxRequestBytes    = "etcd-max-request-bytes"
 	flagEtcdQuotaBackendBytes  = "etcd-quota-backend-bytes"
 
+	// Auth flags
+	//   Basic
+	flagAuthBasicEnable = "auth-basic-enable"
+	//    Allow All
+	flagAuthAllowAllEnable = "auth-allow-all-enable"
+	//    ldap
+	flagAuthLdapEnable               = "auth-ldap-enable"
+	flagAuthLdapBindUsername         = "auth-ldap-bind-username"
+	flagAuthLdapBindPassword         = "auth-ldap-bind-password"
+	flagAuthLdapStartTLS             = "auth-ldap-start-tls"
+	flagAuthLdapURL                  = "auth-ldap-url"
+	flagAuthLdapUserBaseDN           = "auth-ldap-user-base-dn"
+	flagAuthLdapUserAttribute        = "auth-ldap-user-attribute"
+	flagAuthLdapUserClass            = "auth-ldap-user-class"
+	flagAuthLdapGroupBaseDN          = "auth-ldap-group-base-dn"
+	flagAuthLdapGroupAttribute       = "auth-ldap-group-attribute"
+	flagAuthLdapGroupClass           = "auth-ldap-group-class"
+	flagAuthLdapGroupUserDNAttribute = "auth-ldap-group-user-dn-attribute"
+
 	// Default values
 
 	// defaultEtcdClientURL is the default URL to listen for Etcd clients
@@ -172,6 +191,7 @@ func StartCommand(initialize InitializeFunc) *cobra.Command {
 				initialCluster = fmt.Sprintf("%s=%s", defaultEtcdName, defaultEtcdPeerURL)
 			}
 
+			// Setting a value here from viper enables config file support
 			cfg := &backend.Config{
 				AgentHost:             viper.GetString(flagAgentHost),
 				AgentPort:             viper.GetInt(flagAgentPort),
@@ -207,6 +227,22 @@ func StartCommand(initialize InitializeFunc) *cobra.Command {
 				NoEmbedEtcd:                  viper.GetBool(flagNoEmbedEtcd),
 				Labels:                       viper.GetStringMapString(flagLabels),
 				Annotations:                  viper.GetStringMapString(flagAnnotations),
+
+				AuthBasicEnable:    viper.GetBool(flagAuthBasicEnable),
+				AuthAllowAllEnable: viper.GetBool(flagAuthAllowAllEnable),
+
+				AuthLdapEnable:               viper.GetBool(flagAuthLdapEnable),
+				AuthLdapBindUsername:         viper.GetString(flagAuthLdapBindUsername),
+				AuthLdapBindPassword:         viper.GetString(flagAuthLdapBindPassword),
+				AuthLdapStartTLS:             viper.GetBool(flagAuthLdapStartTLS),
+				AuthLdapURL:                  viper.GetString(flagAuthLdapURL),
+				AuthLdapUserBaseDN:           viper.GetString(flagAuthLdapUserBaseDN),
+				AuthLdapUserAttribute:        viper.GetString(flagAuthLdapUserAttribute),
+				AuthLdapUserClass:            viper.GetString(flagAuthLdapUserClass),
+				AuthLdapGroupBaseDN:          viper.GetString(flagAuthLdapGroupBaseDN),
+				AuthLdapGroupAttribute:       viper.GetString(flagAuthLdapGroupAttribute),
+				AuthLdapGroupClass:           viper.GetString(flagAuthLdapGroupClass),
+				AuthLdapGroupUserDNAttribute: viper.GetString(flagAuthLdapGroupUserDNAttribute),
 			}
 
 			if flag := cmd.Flags().Lookup(flagLabels); flag != nil && flag.Changed {
@@ -335,6 +371,12 @@ func handleConfig(cmd *cobra.Command, server bool) error {
 		viper.SetDefault(backend.FlagPipelinedWorkers, 100)
 		viper.SetDefault(backend.FlagPipelinedBufferSize, 100)
 		viper.SetDefault(backend.FlagAgentWriteTimeout, 15)
+
+		// Auth defaults
+		viper.SetDefault(flagAuthBasicEnable, true)
+		viper.SetDefault(flagAuthAllowAllEnable, false)
+		viper.SetDefault(flagAuthLdapEnable, false)
+		viper.SetDefault(flagAuthLdapStartTLS, false)
 	}
 
 	// Etcd defaults
@@ -430,6 +472,24 @@ func handleConfig(cmd *cobra.Command, server bool) error {
 		_ = cmd.Flags().SetAnnotation(flagEtcdPeerTrustedCAFile, "categories", []string{"store"})
 		cmd.Flags().String(flagEtcdNodeName, viper.GetString(flagEtcdNodeName), "name for this etcd node")
 		_ = cmd.Flags().SetAnnotation(flagEtcdNodeName, "categories", []string{"store"})
+
+		// Auth server flags
+		cmd.Flags().Bool(flagAuthBasicEnable, viper.GetBool(flagAuthBasicEnable), "enable basic auth provider")
+		cmd.Flags().Bool(flagAuthAllowAllEnable, viper.GetBool(flagAuthAllowAllEnable), "enable allow all auth provider")
+		//    ldap server flags
+		cmd.Flags().Bool(flagAuthLdapEnable, viper.GetBool(flagAuthLdapEnable), "enable ldap auth provider")
+		cmd.Flags().String(flagAuthLdapBindUsername, viper.GetString(flagAuthLdapBindUsername), "bind username for looking up users and groups")
+		cmd.Flags().String(flagAuthLdapBindPassword, viper.GetString(flagAuthLdapBindPassword), "bind password")
+		cmd.Flags().Bool(flagAuthLdapStartTLS, viper.GetBool(flagAuthLdapStartTLS), "start tls after connecting to ldap server")
+		cmd.Flags().String(flagAuthLdapURL, viper.GetString(flagAuthLdapURL), "Ldap url, Example: ldap://example.com:389 or tls ldaps://")
+		cmd.Flags().String(flagAuthLdapUserBaseDN, viper.GetString(flagAuthLdapUserBaseDN), "base dn to use when looking up users")
+		cmd.Flags().String(flagAuthLdapUserAttribute, viper.GetString(flagAuthLdapUserAttribute), "attribute that will match usernames")
+		cmd.Flags().String(flagAuthLdapUserClass, viper.GetString(flagAuthLdapUserClass), "ldap class used for user objects")
+		cmd.Flags().String(flagAuthLdapGroupBaseDN, viper.GetString(flagAuthLdapGroupBaseDN), "base dn to use when looking up groups")
+		cmd.Flags().String(flagAuthLdapGroupAttribute, viper.GetString(flagAuthLdapGroupAttribute), "attribute that will match group name")
+		cmd.Flags().String(flagAuthLdapGroupClass, viper.GetString(flagAuthLdapGroupClass), "ldap class used for group objects")
+		cmd.Flags().String(flagAuthLdapGroupUserDNAttribute, viper.GetString(flagAuthLdapGroupUserDNAttribute), "attribute in group object that contains member dn")
+
 	}
 
 	// Etcd client/server flags

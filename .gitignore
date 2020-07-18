@@ -21,6 +21,7 @@ coverage.out
 ca-config.json
 agent.yaml
 agent.json
+backend.yaml
 
 # packaging
 *.log

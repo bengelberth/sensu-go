@@ -24,7 +24,9 @@ import (
 	"github.com/sensu/sensu-go/backend/apid/routers"
 	"github.com/sensu/sensu-go/backend/authentication"
 	"github.com/sensu/sensu-go/backend/authentication/jwt"
+	"github.com/sensu/sensu-go/backend/authentication/providers/allowall"
 	"github.com/sensu/sensu-go/backend/authentication/providers/basic"
+	"github.com/sensu/sensu-go/backend/authentication/providers/ldap"
 	"github.com/sensu/sensu-go/backend/authorization/rbac"
 	"github.com/sensu/sensu-go/backend/daemon"
 	"github.com/sensu/sensu-go/backend/dashboardd"
@@ -344,11 +346,43 @@ func Initialize(ctx context.Context, config *Config) (*Backend, error) {
 
 	// Prepare the authentication providers
 	authenticator := &authentication.Authenticator{}
-	basic := &basic.Provider{
-		ObjectMeta: corev2.ObjectMeta{Name: basic.Type},
-		Store:      stor,
+	logger.Debugf("auth-basic-enable: %t", config.AuthBasicEnable)
+	if config.AuthBasicEnable {
+		basic := &basic.Provider{
+			ObjectMeta: corev2.ObjectMeta{Name: basic.Type},
+			Store:      stor,
+		}
+		authenticator.AddProvider(basic)
 	}
-	authenticator.AddProvider(basic)
+
+	logger.Debugf("auth-allow-all-enable: %t", config.AuthAllowAllEnable)
+	if config.AuthAllowAllEnable {
+		allowall := &allowall.Provider{
+			ObjectMeta: corev2.ObjectMeta{Name: allowall.Type},
+		}
+		authenticator.AddProvider(allowall)
+		logger.Infof("Enabled Allow All Authentication")
+	}
+
+	logger.Debugf("auth-ldap-enable: %t", config.AuthLdapEnable)
+	if config.AuthLdapEnable {
+		ldap := &ldap.Provider{
+			ObjectMeta:           corev2.ObjectMeta{Name: ldap.Type},
+			BindUsername:         config.AuthLdapBindUsername,
+			BindPassword:         config.AuthLdapBindPassword,
+			StartTLS:             config.AuthLdapStartTLS,
+			URL:                  config.AuthLdapURL,
+			UserBaseDN:           config.AuthLdapUserBaseDN,
+			UserAttribute:        config.AuthLdapUserAttribute,
+			UserClass:            config.AuthLdapUserClass,
+			GroupBaseDN:          config.AuthLdapGroupBaseDN,
+			GroupAttribute:       config.AuthLdapGroupAttribute,
+			GroupClass:           config.AuthLdapGroupClass,
+			GroupUserDNAttribute: config.AuthLdapGroupUserDNAttribute,
+		}
+		authenticator.AddProvider(ldap)
+		logger.Infof("Enabled ldap Authentication")
+	}
 
 	var clusterVersion string
 	// only retrieve the cluster version if etcd is embedded

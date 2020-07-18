@@ -47,6 +47,26 @@ type Config struct {
 	StateDir string
 	CacheDir string
 
+	// Backend Auth Configuration
+	//    Basic
+	AuthBasicEnable bool
+	//   Allow All
+	AuthAllowAllEnable bool
+
+	//   LDAP
+	AuthLdapEnable               bool
+	AuthLdapBindUsername         string
+	AuthLdapBindPassword         string
+	AuthLdapStartTLS             bool
+	AuthLdapURL                  string
+	AuthLdapUserBaseDN           string
+	AuthLdapUserAttribute        string
+	AuthLdapUserClass            string
+	AuthLdapGroupBaseDN          string
+	AuthLdapGroupAttribute       string
+	AuthLdapGroupClass           string
+	AuthLdapGroupUserDNAttribute string
+
 	// Agentd Configuration
 	AgentHost         string
 	AgentPort         int
